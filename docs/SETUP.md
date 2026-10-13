@@ -96,10 +96,10 @@ The experiment checks SQL results, not answer quality. Review plain-language ans
 
 ## Sources
 
-- [Assignment README](../README.md)
+- [Original assignment instructions](assignment.md)
 - [Prompting paper](https://arxiv.org/html/2305.11853v3): schema relationships, content representation, and demonstrations motivate the comparison.
 - [OpenRouter API documentation](https://openrouter.ai/docs/api_reference/overview): chat completion request format and usage fields.
 - [OpenRouter model catalog](https://openrouter.ai/api/v1/models): current model IDs and pricing; fetched by the experiment runner.
 
-The README requires each person to generate and run with their own OpenAI API key. This implementation uses the OpenRouter key you supplied; confirm that substitution is accepted for your class or satisfy the OpenAI requirement separately.
+The original assignment instructions require each person to generate and run with their own OpenAI API key. This implementation uses the OpenRouter key you supplied; confirm that substitution is accepted for your class or satisfy the OpenAI requirement separately.
 
