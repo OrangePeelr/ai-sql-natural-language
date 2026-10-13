@@ -1,0 +1,4813 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Employee Analytics · Model Comparison</title>
+<style>
+:root{color-scheme:light;--ink:#152538;--muted:#627086;--line:#dae2eb;--blue:#2759b9;--green:#12694e;--red:#ad3146}
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font:15px/1.6 system-ui,sans-serif}
+main{max-width:1440px;margin:auto;padding:48px 28px}header{max-width:900px}.eyebrow{font-size:12px;font-weight:750;letter-spacing:2px;color:var(--blue)}
+h1{font-size:clamp(30px,4vw,46px);line-height:1.15;letter-spacing:-1.5px;margin:18px 0}h2{font-size:23px;line-height:1.3;margin:0 0 10px}h3{font-size:14px;margin:20px 0 8px}
+.intro{font-size:18px;color:var(--muted)}.timestamp,.footnote,footer{color:var(--muted);font-size:12px}.stats{display:flex;gap:16px;margin:30px 0}
+.stats>div{flex:1;background:#e8eef8;border-radius:14px;padding:20px}.stats strong{display:block;font-size:30px;color:var(--blue)}.stats span{color:var(--muted);font-size:13px}
+.panel{background:white;padding:26px;border:1px solid var(--line);border-radius:16px;margin:22px 0}.panel>p{color:var(--muted)}
+.scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:14px;border-bottom:1px solid var(--line);vertical-align:top}thead th{background:#f4f7fb;font-size:12px;color:var(--muted)}
+tbody th{font-weight:600}small{display:block;color:var(--muted);font-size:11px;font-weight:400;margin-top:5px}.bar{height:4px;background:#e7edf6;margin-top:8px;min-width:70px;border-radius:5px}.bar i{display:block;height:100%;background:var(--blue);border-radius:5px}
+.matrix th:first-child{min-width:250px;max-width:330px}.matrix td{white-space:nowrap}.filters{display:flex;flex-wrap:wrap;gap:16px;margin:22px 0}.filters label{font-size:12px;color:var(--muted)}select,input[type=search]{display:block;margin-top:5px;border:1px solid #bdcbdc;border-radius:7px;background:white;color:var(--ink);padding:10px;max-width:300px}
+.check{align-self:end;padding-bottom:10px}.badge{display:inline-block;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}.pass{background:#e2f3eb;color:var(--green)}.fail,.badge.error{background:#ffe6eb;color:var(--red)}.pending{background:#edf0f5;color:var(--muted)}.error{color:var(--red)}a{color:var(--blue)}
+.evidence{border:1px solid var(--line);border-radius:10px;margin:12px 0;scroll-margin-top:20px}.evidence summary{padding:16px;cursor:pointer;font-weight:600}.evidence-body{padding:0 20px 20px}.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;min-width:0}.results-grid>div{min-width:0}
+pre{font:12px/1.6 ui-monospace,monospace;background:#f2f5fa;padding:16px;border-radius:8px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.answer{white-space:pre-wrap}.evidence .badge{margin-right:8px}[hidden]{display:none!important}footer{padding:10px 0 30px}
+@media(max-width:700px){main{padding:24px 12px}.panel{padding:16px}.stats{gap:8px}.stats>div{padding:12px}.stats strong{font-size:22px}.results-grid{grid-template-columns:1fr}}
+</style></head><body>
+<main><header><p class="eyebrow">EMPLOYEE ANALYTICS / MODEL LAB</p>
+<h1>How well do models query your data?</h1>
+<p class="intro">The same questions, database, and prompts. Compare results, then inspect the SQL behind each answer.</p>
+<p class="timestamp">Started 2026-10-13T00:42:43.393996+00:00 · finished</p></header>
+<section class="stats" aria-label="Run overview">
+<div><strong>3</strong><span>Models</span></div>
+<div><strong>10</strong><span>Questions per strategy</span></div>
+<div><strong>60 / 60</strong><span>Completed observations</span></div>
+</section><section class="panel"><h2>Model comparison</h2>
+<p>9 SQL questions and 1 unsupported questions per strategy. Scores use reference query results; they do not grade natural-language answers. Pending cases remain visible.</p>
+<div class="scroll"><table><thead><tr><th>Model</th><th>Strategy</th><th>Correct SQL</th><th>Unsupported recognized</th><th>Completed</th><th>Errors</th><th>Tokens</th><th>Reported cost</th></tr></thead><tbody>
+<tr><th scope="row">google/gemini-3.1-flash-lite</th><td>zero-shot</td>
+<td><strong>9/9</strong><div class="bar"><i style="width:100%"></i></div></td>
+<td>1/1</td><td>10/10</td>
+<td>0</td><td>7,550</td><td>$0.003721</td></tr>
+<tr><th scope="row">google/gemini-3.1-flash-lite</th><td>few-shot</td>
+<td><strong>9/9</strong><div class="bar"><i style="width:100%"></i></div></td>
+<td>1/1</td><td>10/10</td>
+<td>0</td><td>9,356</td><td>$0.004263</td></tr>
+<tr><th scope="row">google/gemma-3-27b-it</th><td>zero-shot</td>
+<td><strong>8/9</strong><div class="bar"><i style="width:89%"></i></div></td>
+<td>1/1</td><td>10/10</td>
+<td>0</td><td>7,816</td><td>$0.001081</td></tr>
+<tr><th scope="row">google/gemma-3-27b-it</th><td>few-shot</td>
+<td><strong>8/9</strong><div class="bar"><i style="width:89%"></i></div></td>
+<td>1/1</td><td>10/10</td>
+<td>0</td><td>9,254</td><td>$0.001008</td></tr>
+<tr><th scope="row">deepseek/deepseek-v3.2</th><td>zero-shot</td>
+<td><strong>9/9</strong><div class="bar"><i style="width:100%"></i></div></td>
+<td>1/1</td><td>10/10</td>
+<td>0</td><td>7,254</td><td>$0.003396</td></tr>
+<tr><th scope="row">deepseek/deepseek-v3.2</th><td>few-shot</td>
+<td><strong>9/9</strong><div class="bar"><i style="width:100%"></i></div></td>
+<td>1/1</td><td>10/10</td>
+<td>0</td><td>8,722</td><td>$0.003399</td></tr>
+</tbody></table></div><p class="footnote">Cost is the API-reported total for recorded calls. Unavailable means at least one observation has no reported cost. Calls that fail before returning usage may still be billed. Models can skip the answer call when declining a question; cost totals may reflect different call counts.</p></section>
+<section class="panel"><h2>Question outcomes</h2><p>Select an outcome to inspect its evidence.</p>
+<div class="filters"><label>Model<select id="model-filter"><option value="">All models</option>
+<option value="m0">google/gemini-3.1-flash-lite</option>
+<option value="m1">google/gemma-3-27b-it</option>
+<option value="m2">deepseek/deepseek-v3.2</option>
+</select></label><label>Strategy<select id="strategy-filter"><option value="">Both strategies</option><option>zero-shot</option><option>few-shot</option></select></label>
+<label>Search questions<input id="search" type="search" placeholder="e.g. salary or hierarchy"></label>
+<label class="check"><input id="failures" type="checkbox">Failures and errors only</label></div>
+<div class="scroll"><table class="matrix"><thead><tr><th>Question</th>
+<th data-model="m0" data-strategy="zero-shot">google/gemini-3.1-flash-lite<small>zero-shot</small></th>
+<th data-model="m0" data-strategy="few-shot">google/gemini-3.1-flash-lite<small>few-shot</small></th>
+<th data-model="m1" data-strategy="zero-shot">google/gemma-3-27b-it<small>zero-shot</small></th>
+<th data-model="m1" data-strategy="few-shot">google/gemma-3-27b-it<small>few-shot</small></th>
+<th data-model="m2" data-strategy="zero-shot">deepseek/deepseek-v3.2<small>zero-shot</small></th>
+<th data-model="m2" data-strategy="few-shot">deepseek/deepseek-v3.2<small>few-shot</small></th>
+</tr></thead><tbody>
+<tr class="question-row" data-search="count How many employees are there?">
+<th scope="row">How many employees are there?<small>count · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-0-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-0-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-0-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-0-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-0-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-0-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="averages What is the average annual salary in dollars for each role?">
+<th scope="row">What is the average annual salary in dollars for each role?<small>averages · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-1-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-1-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-1-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-1-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-1-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-1-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="highest Who earns the highest annual salary? Include all ties and their salaries in dollars.">
+<th scope="row">Who earns the highest annual salary? Include all ties and their salaries in dollars.<small>highest · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-2-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-2-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-2-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-2-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-2-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-2-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="dates Which employees started before January 1, 2023? Return their names and start dates.">
+<th scope="row">Which employees started before January 1, 2023? Return their names and start dates.<small>dates · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-3-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-3-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-3-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-3-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-3-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-3-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="direct Who reports directly to Alex Chen? Return their names.">
+<th scope="row">Who reports directly to Alex Chen? Return their names.<small>direct · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-4-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-4-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-4-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-4-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-4-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-4-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="managers Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.">
+<th scope="row">Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.<small>managers · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-5-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-5-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-5-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-5-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-5-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-5-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="higher_than_manager Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.">
+<th scope="row">Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.<small>higher_than_manager · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-6-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-6-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-6-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-6-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-6-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-6-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="hierarchy Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.">
+<th scope="row">Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.<small>hierarchy · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-7-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-7-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="fail">
+<a href="#evidence-1-7-zero-shot"><span class="badge fail">Fail</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="fail">
+<a href="#evidence-1-7-few-shot"><span class="badge fail">Fail</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-7-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-7-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="unsupported Who received a promotion last year?">
+<th scope="row">Who received a promotion last year?<small>unsupported · Unsupported</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-8-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-8-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-8-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-8-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-8-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-8-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+<tr class="question-row" data-search="noboss Who doesnt have a boss?">
+<th scope="row">Who doesnt have a boss?<small>noboss · SQL</small></th>
+<td data-model="m0" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-0-9-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m0" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-0-9-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-1-9-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m1" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-1-9-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="zero-shot" data-outcome="pass">
+<a href="#evidence-2-9-zero-shot"><span class="badge pass">Pass</span></a>
+</td>
+<td data-model="m2" data-strategy="few-shot" data-outcome="pass">
+<a href="#evidence-2-9-few-shot"><span class="badge pass">Pass</span></a>
+</td>
+</tr>
+</tbody></table></div></section><section class="panel"><h2>Query evidence</h2>
+<details class="evidence" id="evidence-0-0-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="count How many employees are there?"><summary><span class="badge pass">Pass</span> How many employees are there?<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT count(*) FROM employee</pre><h3>Answer</h3>
+<div class="answer">There are 30 employees.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;count(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT COUNT(*) FROM employee;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 514,
+  &quot;completion_tokens&quot;: 50,
+  &quot;estimated_cost_usd&quot;: 0.0002035,
+  &quot;reported_cost_usd&quot;: 0.00020349999999999999
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-0-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="count How many employees are there?"><summary><span class="badge pass">Pass</span> How many employees are there?<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT COUNT(*) FROM employee;</pre><h3>Answer</h3>
+<div class="answer">There are 30 employees.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT COUNT(*) FROM employee;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 685,
+  &quot;completion_tokens&quot;: 50,
+  &quot;estimated_cost_usd&quot;: 0.00024625,
+  &quot;reported_cost_usd&quot;: 0.00024625
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-0-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="count How many employees are there?"><summary><span class="badge pass">Pass</span> How many employees are there?<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT count(*) FROM employee</pre><h3>Answer</h3>
+<div class="answer">
+There are 30 employees.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;count(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT COUNT(*) FROM employee;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 538,
+  &quot;completion_tokens&quot;: 47,
+  &quot;estimated_cost_usd&quot;: 6.419e-05,
+  &quot;reported_cost_usd&quot;: 6.57e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-0-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="count How many employees are there?"><summary><span class="badge pass">Pass</span> How many employees are there?<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT COUNT(*) AS employee_count FROM employee;</pre><h3>Answer</h3>
+<div class="answer">
+There are 30 employees.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;employee_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT COUNT(*) FROM employee;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 714,
+  &quot;completion_tokens&quot;: 46,
+  &quot;estimated_cost_usd&quot;: 7.782e-05,
+  &quot;reported_cost_usd&quot;: 6.0469999999999995e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-0-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="count How many employees are there?"><summary><span class="badge pass">Pass</span> How many employees are there?<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT COUNT(*) AS count FROM employee;</pre><h3>Answer</h3>
+<div class="answer">There are 30 employees.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT COUNT(*) FROM employee;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 477,
+  &quot;completion_tokens&quot;: 52,
+  &quot;estimated_cost_usd&quot;: 0.00016514299999999997,
+  &quot;reported_cost_usd&quot;: 0.00017056799999999998
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-0-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="count How many employees are there?"><summary><span class="badge pass">Pass</span> How many employees are there?<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT COUNT(*) AS employee_count FROM employee;</pre><h3>Answer</h3>
+<div class="answer">There are 30 employees.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;employee_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT COUNT(*) FROM employee;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      30
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 625,
+  &quot;completion_tokens&quot;: 52,
+  &quot;estimated_cost_usd&quot;: 0.000203475,
+  &quot;reported_cost_usd&quot;: 0.00020898199999999997
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-1-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="averages What is the average annual salary in dollars for each role?"><summary><span class="badge pass">Pass</span> What is the average annual salary in dollars for each role?<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT role, AVG(salary) / 100.0 FROM employee GROUP BY role</pre><h3>Answer</h3>
+<div class="answer">The average annual salaries by role are:
+
+*   **Analyst:** $92,166.67
+*   **Designer:** $97,000.00
+*   **Engineer:** $132,500.00
+*   **Executive:** $220,000.00
+*   **Intern:** $47,000.00
+*   **Manager:** $135,000.00</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary) / 100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT role, AVG(salary)/100.0 FROM employee GROUP BY role ORDER BY role;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary)/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 635,
+  &quot;completion_tokens&quot;: 171,
+  &quot;estimated_cost_usd&quot;: 0.00041525,
+  &quot;reported_cost_usd&quot;: 0.00041525
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-1-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="averages What is the average annual salary in dollars for each role?"><summary><span class="badge pass">Pass</span> What is the average annual salary in dollars for each role?<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT role, AVG(salary) / 100.0 AS average_annual_salary_usd FROM employee GROUP BY role</pre><h3>Answer</h3>
+<div class="answer">The average annual salaries by role are:
+
+*   **Analyst:** $92,166.67
+*   **Designer:** $97,000.00
+*   **Engineer:** $132,500.00
+*   **Executive:** $220,000.00
+*   **Intern:** $47,000.00
+*   **Manager:** $135,000.00</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;average_annual_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT role, AVG(salary)/100.0 FROM employee GROUP BY role ORDER BY role;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary)/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 810,
+  &quot;completion_tokens&quot;: 179,
+  &quot;estimated_cost_usd&quot;: 0.000471,
+  &quot;reported_cost_usd&quot;: 0.000471
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-1-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="averages What is the average annual salary in dollars for each role?"><summary><span class="badge pass">Pass</span> What is the average annual salary in dollars for each role?<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT role, AVG(salary / 100.0) FROM employee GROUP BY role;</pre><h3>Answer</h3>
+<div class="answer">
+The average annual salaries are: analyst ($92,166.67), designer ($97,000.00), engineer ($132,500.00), executive ($220,000.00), intern ($47,000.00), and manager ($135,000.00).</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary / 100.0)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666667
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT role, AVG(salary)/100.0 FROM employee GROUP BY role ORDER BY role;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary)/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 659,
+  &quot;completion_tokens&quot;: 154,
+  &quot;estimated_cost_usd&quot;: 0.00012202,
+  &quot;reported_cost_usd&quot;: 0.00011152
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-1-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="averages What is the average annual salary in dollars for each role?"><summary><span class="badge pass">Pass</span> What is the average annual salary in dollars for each role?<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT role, AVG(salary) / 100.0 AS average_salary_usd FROM employee GROUP BY role ORDER BY role;</pre><h3>Answer</h3>
+<div class="answer">Here&#x27;s the average annual salary in dollars for each role:
+
+*   **analyst**: $92,166.67
+*   **designer**: $97,000.00
+*   **engineer**: $132,500.00
+*   **executive**: $220,000.00
+*   **intern**: $47,000.00
+*   **manager**: $135,000.00</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;average_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT role, AVG(salary)/100.0 FROM employee GROUP BY role ORDER BY role;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary)/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 829,
+  &quot;completion_tokens&quot;: 209,
+  &quot;estimated_cost_usd&quot;: 0.00016037,
+  &quot;reported_cost_usd&quot;: 0.00012471
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-1-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="averages What is the average annual salary in dollars for each role?"><summary><span class="badge pass">Pass</span> What is the average annual salary in dollars for each role?<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT role, AVG(salary) / 100.0 AS average_salary_dollars FROM employee GROUP BY role ORDER BY role;</pre><h3>Answer</h3>
+<div class="answer">Based on the query results, the average annual salary in dollars for each role is as follows:
+
+*   Analyst: $92,166.67
+*   Designer: $97,000.00
+*   Engineer: $132,500.00
+*   Executive: $220,000.00
+*   Intern: $47,000.00
+*   Manager: $135,000.00
+
+The results are complete and not truncated.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;average_salary_dollars&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT role, AVG(salary)/100.0 FROM employee GROUP BY role ORDER BY role;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary)/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 577,
+  &quot;completion_tokens&quot;: 196,
+  &quot;estimated_cost_usd&quot;: 0.000306243,
+  &quot;reported_cost_usd&quot;: 0.000420002
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-1-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="averages What is the average annual salary in dollars for each role?"><summary><span class="badge pass">Pass</span> What is the average annual salary in dollars for each role?<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT role, AVG(salary) / 100.0 AS average_annual_salary_usd FROM employee GROUP BY role ORDER BY role;</pre><h3>Answer</h3>
+<div class="answer">Based on the query results, the average annual salary in USD for each role is as follows:
+
+*   Analyst: $92,166.67
+*   Designer: $97,000.00
+*   Engineer: $132,500.00
+*   Executive: $220,000.00
+*   Intern: $47,000.00
+*   Manager: $135,000.00
+
+The results are complete and not truncated.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;average_annual_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT role, AVG(salary)/100.0 FROM employee GROUP BY role ORDER BY role;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;role&quot;,
+    &quot;AVG(salary)/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;analyst&quot;,
+      92166.66666666666
+    ],
+    [
+      &quot;designer&quot;,
+      97000.0
+    ],
+    [
+      &quot;engineer&quot;,
+      132500.0
+    ],
+    [
+      &quot;executive&quot;,
+      220000.0
+    ],
+    [
+      &quot;intern&quot;,
+      47000.0
+    ],
+    [
+      &quot;manager&quot;,
+      135000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 725,
+  &quot;completion_tokens&quot;: 196,
+  &quot;estimated_cost_usd&quot;: 0.00034457499999999996,
+  &quot;reported_cost_usd&quot;: 0.00034457499999999996
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-2-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="highest Who earns the highest annual salary? Include all ties and their salaries in dollars."><summary><span class="badge pass">Pass</span> Who earns the highest annual salary? Include all ties and their salaries in dollars.<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, salary / 100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee)</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee and River Mitchell earn the highest annual salary of $220,000.00.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary / 100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, salary/100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 587,
+  &quot;completion_tokens&quot;: 95,
+  &quot;estimated_cost_usd&quot;: 0.00028925,
+  &quot;reported_cost_usd&quot;: 0.00028925
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-2-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="highest Who earns the highest annual salary? Include all ties and their salaries in dollars."><summary><span class="badge pass">Pass</span> Who earns the highest annual salary? Include all ties and their salaries in dollars.<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, salary / 100.0 AS salary_usd FROM employee WHERE salary = (SELECT MAX(salary) FROM employee)</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee and River Mitchell earn the highest annual salary of $220,000.00.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, salary/100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 757,
+  &quot;completion_tokens&quot;: 100,
+  &quot;estimated_cost_usd&quot;: 0.00033925000000000003,
+  &quot;reported_cost_usd&quot;: 0.00033925000000000003
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-2-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="highest Who earns the highest annual salary? Include all ties and their salaries in dollars."><summary><span class="badge pass">Pass</span> Who earns the highest annual salary? Include all ties and their salaries in dollars.<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, salary / 100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee);</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee and River Mitchell both earn the highest annual salary of $220,000.00.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary / 100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, salary/100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 608,
+  &quot;completion_tokens&quot;: 128,
+  &quot;estimated_cost_usd&quot;: 0.00010624,
+  &quot;reported_cost_usd&quot;: 0.00010589
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-2-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="highest Who earns the highest annual salary? Include all ties and their salaries in dollars."><summary><span class="badge pass">Pass</span> Who earns the highest annual salary? Include all ties and their salaries in dollars.<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, salary / 100.0 AS annual_salary_usd FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">
+Morgan Lee and River Mitchell both earn the highest annual salary of $220000.0.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;annual_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, salary/100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 789,
+  &quot;completion_tokens&quot;: 119,
+  &quot;estimated_cost_usd&quot;: 0.00011667,
+  &quot;reported_cost_usd&quot;: 9.107e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-2-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="highest Who earns the highest annual salary? Include all ties and their salaries in dollars."><summary><span class="badge pass">Pass</span> Who earns the highest annual salary? Include all ties and their salaries in dollars.<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, salary / 100.0 AS salary_dollars FROM employee WHERE salary = (SELECT MAX(salary) FROM employee);</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee and River Mitchell each earn the highest annual salary, which is $220,000.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary_dollars&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, salary/100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 541,
+  &quot;completion_tokens&quot;: 119,
+  &quot;estimated_cost_usd&quot;: 0.000235319,
+  &quot;reported_cost_usd&quot;: 0.000245038
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-2-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="highest Who earns the highest annual salary? Include all ties and their salaries in dollars."><summary><span class="badge pass">Pass</span> Who earns the highest annual salary? Include all ties and their salaries in dollars.<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, salary / 100.0 AS annual_salary_usd FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee and River Mitchell earn the highest annual salary, each with an annual salary of $220,000.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;annual_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, salary/100.0 FROM employee WHERE salary = (SELECT MAX(salary) FROM employee) ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      220000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      220000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 693,
+  &quot;completion_tokens&quot;: 123,
+  &quot;estimated_cost_usd&quot;: 0.000277887,
+  &quot;reported_cost_usd&quot;: 0.000288332
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-3-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="dates Which employees started before January 1, 2023? Return their names and start dates."><summary><span class="badge pass">Pass</span> Which employees started before January 1, 2023? Return their names and start dates.<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27;</pre><h3>Answer</h3>
+<div class="answer">The following employees started before January 1, 2023:
+
+*   **Morgan Lee:** 2015-02-01
+*   **Alex Chen:** 2018-04-15
+*   **Jordan Smith:** 2019-07-01
+*   **Taylor Brooks:** 2020-01-20
+*   **Sam Rivera:** 2021-03-01
+*   **Casey Patel:** 2019-08-12
+*   **Jamie Kim:** 2022-06-01
+*   **Avery Jones:** 2022-11-15
+*   **Skyler Wilson:** 2020-10-01
+*   **Blake Moore:** 2021-12-01
+*   **Dakota Hall:** 2022-01-01
+*   **Emerson Wright:** 2021-09-01
+*   **Harper Scott:** 2022-05-01
+*   **Elliot Nelson:** 2020-03-01
+*   **River Mitchell:** 2017-06-01
+*   **Robin Perez:** 2022-12-31
+*   **Shawn Phillips:** 2021-05-01</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 842,
+  &quot;completion_tokens&quot;: 405,
+  &quot;estimated_cost_usd&quot;: 0.0008179999999999999,
+  &quot;reported_cost_usd&quot;: 0.0008179999999999999
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-3-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="dates Which employees started before January 1, 2023? Return their names and start dates."><summary><span class="badge pass">Pass</span> Which employees started before January 1, 2023? Return their names and start dates.<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY start_date, name;</pre><h3>Answer</h3>
+<div class="answer">The following employees started before January 1, 2023:
+
+*   **Morgan Lee**: 2015-02-01
+*   **River Mitchell**: 2017-06-01
+*   **Alex Chen**: 2018-04-15
+*   **Jordan Smith**: 2019-07-01
+*   **Casey Patel**: 2019-08-12
+*   **Taylor Brooks**: 2020-01-20
+*   **Elliot Nelson**: 2020-03-01
+*   **Skyler Wilson**: 2020-10-01
+*   **Sam Rivera**: 2021-03-01
+*   **Shawn Phillips**: 2021-05-01
+*   **Emerson Wright**: 2021-09-01
+*   **Blake Moore**: 2021-12-01
+*   **Dakota Hall**: 2022-01-01
+*   **Harper Scott**: 2022-05-01
+*   **Jamie Kim**: 2022-06-01
+*   **Avery Jones**: 2022-11-15
+*   **Robin Perez**: 2022-12-31</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 1021,
+  &quot;completion_tokens&quot;: 411,
+  &quot;estimated_cost_usd&quot;: 0.0008717499999999999,
+  &quot;reported_cost_usd&quot;: 0.00087175
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-3-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="dates Which employees started before January 1, 2023? Return their names and start dates."><summary><span class="badge pass">Pass</span> Which employees started before January 1, 2023? Return their names and start dates.<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27;</pre><h3>Answer</h3>
+<div class="answer">
+Here are the employees who started before January 1, 2023, along with their start dates:
+
+*   Morgan Lee: 2015-02-01
+*   Alex Chen: 2018-04-15
+*   Jordan Smith: 2019-07-01
+*   Taylor Brooks: 2020-01-20
+*   Sam Rivera: 2021-03-01
+*   Casey Patel: 2019-08-12
+*   Jamie Kim: 2022-06-01
+*   Avery Jones: 2022-11-15
+*   Skyler Wilson: 2020-10-01
+*   Blake Moore: 2021-12-01
+*   Dakota Hall: 2022-01-01
+*   Emerson Wright: 2021-09-01
+*   Harper Scott: 2022-05-01
+*   Elliot Nelson: 2020-03-01
+*   River Mitchell: 2017-06-01
+*   Robin Perez: 2022-12-31
+*   Shawn Phillips: 2021-05-01</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 866,
+  &quot;completion_tokens&quot;: 387,
+  &quot;estimated_cost_usd&quot;: 0.00024343,
+  &quot;reported_cost_usd&quot;: 0.00019558
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-3-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="dates Which employees started before January 1, 2023? Return their names and start dates."><summary><span class="badge pass">Pass</span> Which employees started before January 1, 2023? Return their names and start dates.<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">Here are the employees who started before January 1, 2023, with their names and start dates:
+
+Alex Chen - 2018-04-15
+Avery Jones - 2022-11-15
+Blake Moore - 2021-12-01
+Casey Patel - 2019-08-12
+Dakota Hall - 2022-01-01
+Elliot Nelson - 2020-03-01
+Emerson Wright - 2021-09-01
+Harper Scott - 2022-05-01
+Jamie Kim - 2022-06-01
+Jordan Smith - 2019-07-01
+Morgan Lee - 2015-02-01
+River Mitchell - 2017-06-01
+Robin Perez - 2022-12-31
+Sam Rivera - 2021-03-01
+Shawn Phillips - 2021-05-01
+Skyler Wilson - 2020-10-01
+Taylor Brooks - 2020-01-20</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 1037,
+  &quot;completion_tokens&quot;: 357,
+  &quot;estimated_cost_usd&quot;: 0.00024361,
+  &quot;reported_cost_usd&quot;: 0.00018627999999999999
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-3-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="dates Which employees started before January 1, 2023? Return their names and start dates."><summary><span class="badge pass">Pass</span> Which employees started before January 1, 2023? Return their names and start dates.<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY start_date;</pre><h3>Answer</h3>
+<div class="answer">The employees who started before January 1, 2023, along with their start dates, are:
+
+- Morgan Lee (2015-02-01)
+- River Mitchell (2017-06-01)
+- Alex Chen (2018-04-15)
+- Jordan Smith (2019-07-01)
+- Casey Patel (2019-08-12)
+- Taylor Brooks (2020-01-20)
+- Elliot Nelson (2020-03-01)
+- Skyler Wilson (2020-10-01)
+- Sam Rivera (2021-03-01)
+- Shawn Phillips (2021-05-01)
+- Emerson Wright (2021-09-01)
+- Blake Moore (2021-12-01)
+- Dakota Hall (2022-01-01)
+- Harper Scott (2022-05-01)
+- Jamie Kim (2022-06-01)
+- Avery Jones (2022-11-15)
+- Robin Perez (2022-12-31)
+
+The results are complete (not truncated).</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 737,
+  &quot;completion_tokens&quot;: 324,
+  &quot;estimated_cost_usd&quot;: 0.000450083,
+  &quot;reported_cost_usd&quot;: 0.00066638
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-3-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="dates Which employees started before January 1, 2023? Return their names and start dates."><summary><span class="badge pass">Pass</span> Which employees started before January 1, 2023? Return their names and start dates.<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">The employees who started before January 1, 2023, are as follows:
+
+| Name            | Start Date   |
+|-----------------|--------------|
+| Alex Chen       | 2018-04-15   |
+| Avery Jones     | 2022-11-15   |
+| Blake Moore     | 2021-12-01   |
+| Casey Patel     | 2019-08-12   |
+| Dakota Hall     | 2022-01-01   |
+| Elliot Nelson   | 2020-03-01   |
+| Emerson Wright  | 2021-09-01   |
+| Harper Scott    | 2022-05-01   |
+| Jamie Kim       | 2022-06-01   |
+| Jordan Smith    | 2019-07-01   |
+| Morgan Lee      | 2015-02-01   |
+| River Mitchell  | 2017-06-01   |
+| Robin Perez     | 2022-12-31   |
+| Sam Rivera      | 2021-03-01   |
+| Shawn Phillips  | 2021-05-01   |
+| Skyler Wilson   | 2020-10-01   |
+| Taylor Brooks   | 2020-01-20   |</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name, start_date FROM employee WHERE start_date &lt; &#x27;2023-01-01&#x27; ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;start_date&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      &quot;2018-04-15&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;,
+      &quot;2022-11-15&quot;
+    ],
+    [
+      &quot;Blake Moore&quot;,
+      &quot;2021-12-01&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;,
+      &quot;2019-08-12&quot;
+    ],
+    [
+      &quot;Dakota Hall&quot;,
+      &quot;2022-01-01&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;,
+      &quot;2020-03-01&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;,
+      &quot;2021-09-01&quot;
+    ],
+    [
+      &quot;Harper Scott&quot;,
+      &quot;2022-05-01&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;,
+      &quot;2022-06-01&quot;
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      &quot;2019-07-01&quot;
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      &quot;2015-02-01&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;2017-06-01&quot;
+    ],
+    [
+      &quot;Robin Perez&quot;,
+      &quot;2022-12-31&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      &quot;2021-03-01&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;2021-05-01&quot;
+    ],
+    [
+      &quot;Skyler Wilson&quot;,
+      &quot;2020-10-01&quot;
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      &quot;2020-01-20&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 882,
+  &quot;completion_tokens&quot;: 361,
+  &quot;estimated_cost_usd&quot;: 0.0005172379999999999,
+  &quot;reported_cost_usd&quot;: 0.000574989
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-4-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="direct Who reports directly to Alex Chen? Return their names."><summary><span class="badge pass">Pass</span> Who reports directly to Alex Chen? Return their names.<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27;</pre><h3>Answer</h3>
+<div class="answer">The employees who report directly to Alex Chen are Sam Rivera, Casey Patel, Jamie Kim, Riley Park, Emerson Wright, Charlie Baker, and River Mitchell.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 573,
+  &quot;completion_tokens&quot;: 101,
+  &quot;estimated_cost_usd&quot;: 0.00029475,
+  &quot;reported_cost_usd&quot;: 0.00029475
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-4-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="direct Who reports directly to Alex Chen? Return their names."><summary><span class="badge pass">Pass</span> Who reports directly to Alex Chen? Return their names.<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27;</pre><h3>Answer</h3>
+<div class="answer">The employees who report directly to Alex Chen are Sam Rivera, Casey Patel, Jamie Kim, Riley Park, Emerson Wright, Charlie Baker, and River Mitchell.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 744,
+  &quot;completion_tokens&quot;: 101,
+  &quot;estimated_cost_usd&quot;: 0.0003375,
+  &quot;reported_cost_usd&quot;: 0.00033749999999999996
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-4-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="direct Who reports directly to Alex Chen? Return their names."><summary><span class="badge pass">Pass</span> Who reports directly to Alex Chen? Return their names.<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name FROM employee AS e WHERE e.manager_id = (SELECT id FROM employee WHERE name = &#x27;Alex Chen&#x27;);</pre><h3>Answer</h3>
+<div class="answer">Concise answer:
+Sam Rivera, Casey Patel, Jamie Kim, Riley Park, Emerson Wright, Charlie Baker, and River Mitchell report directly to Alex Chen.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 596,
+  &quot;completion_tokens&quot;: 108,
+  &quot;estimated_cost_usd&quot;: 9.627999999999999e-05,
+  &quot;reported_cost_usd&quot;: 9.133000000000001e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-4-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="direct Who reports directly to Alex Chen? Return their names."><summary><span class="badge pass">Pass</span> Who reports directly to Alex Chen? Return their names.<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre><h3>Answer</h3>
+<div class="answer">
+Casey Patel, Charlie Baker, Emerson Wright, Jamie Kim, Riley Park, River Mitchell, and Sam Rivera report directly to Alex Chen.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 774,
+  &quot;completion_tokens&quot;: 103,
+  &quot;estimated_cost_usd&quot;: 0.00010826999999999999,
+  &quot;reported_cost_usd&quot;: 8.088e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-4-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="direct Who reports directly to Alex Chen? Return their names."><summary><span class="badge pass">Pass</span> Who reports directly to Alex Chen? Return their names.<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e2.name FROM employee e1 JOIN employee e2 ON e1.id = e2.manager_id WHERE e1.name = &#x27;Alex Chen&#x27;;</pre><h3>Answer</h3>
+<div class="answer">Alex Chen has seven direct reports: Sam Rivera, Casey Patel, Jamie Kim, Riley Park, Emerson Wright, Charlie Baker, and River Mitchell.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 541,
+  &quot;completion_tokens&quot;: 114,
+  &quot;estimated_cost_usd&quot;: 0.00023131899999999999,
+  &quot;reported_cost_usd&quot;: 0.00043024
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-4-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="direct Who reports directly to Alex Chen? Return their names."><summary><span class="badge pass">Pass</span> Who reports directly to Alex Chen? Return their names.<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre><h3>Answer</h3>
+<div class="answer">Alex Chen has seven direct reports: Casey Patel, Charlie Baker, Emerson Wright, Jamie Kim, Riley Park, River Mitchell, and Sam Rivera.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 686,
+  &quot;completion_tokens&quot;: 115,
+  &quot;estimated_cost_usd&quot;: 0.00026967399999999997,
+  &quot;reported_cost_usd&quot;: 0.000281157
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-5-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="managers Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label."><summary><span class="badge pass">Pass</span> Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT m.name, COUNT(e.id) AS report_count FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING report_count &gt;= 3</pre><h3>Answer</h3>
+<div class="answer">The following managers have at least three direct reports:
+
+* **Morgan Lee**: 3
+* **Alex Chen**: 7
+* **Jordan Smith**: 7
+* **Taylor Brooks**: 6
+* **Sam Rivera**: 6</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;report_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT m.name, COUNT(*) FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(*) &gt;= 3 ORDER BY m.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 622,
+  &quot;completion_tokens&quot;: 150,
+  &quot;estimated_cost_usd&quot;: 0.0003805,
+  &quot;reported_cost_usd&quot;: 0.0003805
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-5-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="managers Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label."><summary><span class="badge pass">Pass</span> Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT m.name, COUNT(e.id) AS report_count FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(e.id) &gt;= 3</pre><h3>Answer</h3>
+<div class="answer">The following managers have at least three direct reports:
+
+* **Morgan Lee**: 3
+* **Alex Chen**: 7
+* **Jordan Smith**: 7
+* **Taylor Brooks**: 6
+* **Sam Rivera**: 6</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;report_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT m.name, COUNT(*) FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(*) &gt;= 3 ORDER BY m.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 796,
+  &quot;completion_tokens&quot;: 149,
+  &quot;estimated_cost_usd&quot;: 0.0004225,
+  &quot;reported_cost_usd&quot;: 0.00042249999999999997
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-5-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="managers Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label."><summary><span class="badge pass">Pass</span> Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e1.name, COUNT(e2.id) AS direct_report_count FROM employee AS e1 JOIN employee AS e2 ON e1.id = e2.manager_id GROUP BY e1.id HAVING COUNT(e2.id) &gt;= 3;</pre><h3>Answer</h3>
+<div class="answer">
+Morgan Lee, Alex Chen, Jordan Smith, Taylor Brooks, and Sam Rivera have at least three direct reports. Their direct report counts are 3, 7, 7, 6, and 6 respectively.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;direct_report_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT m.name, COUNT(*) FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(*) &gt;= 3 ORDER BY m.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 663,
+  &quot;completion_tokens&quot;: 174,
+  &quot;estimated_cost_usd&quot;: 0.00013134,
+  &quot;reported_cost_usd&quot;: 0.00011847999999999999
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-5-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="managers Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label."><summary><span class="badge pass">Pass</span> Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT m.name, COUNT(e.id) AS direct_report_count FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(e.id) &gt;= 3 ORDER BY m.name;</pre><h3>Answer</h3>
+<div class="answer">
+Alex Chen has 7 direct reports, Jordan Smith has 7 direct reports, Morgan Lee has 3 direct reports, Sam Rivera has 6 direct reports, and Taylor Brooks has 6 direct reports.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;direct_report_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT m.name, COUNT(*) FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(*) &gt;= 3 ORDER BY m.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 829,
+  &quot;completion_tokens&quot;: 166,
+  &quot;estimated_cost_usd&quot;: 0.00014102,
+  &quot;reported_cost_usd&quot;: 0.00011798
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-5-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="managers Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label."><summary><span class="badge pass">Pass</span> Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name AS manager_name, COUNT(r.id) AS direct_report_count FROM employee e LEFT JOIN employee r ON e.id = r.manager_id GROUP BY e.id HAVING COUNT(r.id) &gt;= 3 ORDER BY direct_report_count DESC;</pre><h3>Answer</h3>
+<div class="answer">The managers with at least three direct reports are:
+
+- Alex Chen (7 direct reports)
+- Jordan Smith (7 direct reports)
+- Taylor Brooks (6 direct reports)
+- Sam Rivera (6 direct reports)
+- Morgan Lee (3 direct reports)</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;manager_name&quot;,
+    &quot;direct_report_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT m.name, COUNT(*) FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(*) &gt;= 3 ORDER BY m.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 593,
+  &quot;completion_tokens&quot;: 210,
+  &quot;estimated_cost_usd&quot;: 0.00032158699999999997,
+  &quot;reported_cost_usd&quot;: 0.000406451
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-5-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="managers Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label."><summary><span class="badge pass">Pass</span> Which managers have at least three direct reports? Return their names and direct report counts, regardless of their role label.<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name, COUNT(r.id) AS direct_report_count FROM employee e LEFT JOIN employee r ON e.id = r.manager_id GROUP BY e.id HAVING direct_report_count &gt;= 3 ORDER BY e.name;</pre><h3>Answer</h3>
+<div class="answer">According to the query results, the following managers have at least three direct reports:
+
+| Name | Direct Report Count |
+|------|---------------------|
+| Alex Chen | 7 |
+| Jordan Smith | 7 |
+| Morgan Lee | 3 |
+| Sam Rivera | 6 |
+| Taylor Brooks | 6 |</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;direct_report_count&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT m.name, COUNT(*) FROM employee e JOIN employee m ON e.manager_id = m.id GROUP BY m.id HAVING COUNT(*) &gt;= 3 ORDER BY m.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;COUNT(*)&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Alex Chen&quot;,
+      7
+    ],
+    [
+      &quot;Jordan Smith&quot;,
+      7
+    ],
+    [
+      &quot;Morgan Lee&quot;,
+      3
+    ],
+    [
+      &quot;Sam Rivera&quot;,
+      6
+    ],
+    [
+      &quot;Taylor Brooks&quot;,
+      6
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 732,
+  &quot;completion_tokens&quot;: 208,
+  &quot;estimated_cost_usd&quot;: 0.00035598799999999995,
+  &quot;reported_cost_usd&quot;: 0.00037446500000000004
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-6-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="higher_than_manager Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars."><summary><span class="badge pass">Pass</span> Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name, m.name, e.salary / 100.0, m.salary / 100.0 FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary</pre><h3>Answer</h3>
+<div class="answer">The following employees earn more than their managers:
+
+*   **Casey Patel** earns $160,000, while manager **Alex Chen** earns $140,000.
+*   **River Mitchell** earns $220,000, while manager **Alex Chen** earns $140,000.
+*   **Shawn Phillips** earns $135,000, while manager **Sam Rivera** earns $125,000.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;name&quot;,
+    &quot;e.salary / 100.0&quot;,
+    &quot;m.salary / 100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name, m.name, e.salary/100.0, m.salary/100.0 FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;name&quot;,
+    &quot;e.salary/100.0&quot;,
+    &quot;m.salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 710,
+  &quot;completion_tokens&quot;: 220,
+  &quot;estimated_cost_usd&quot;: 0.0005075,
+  &quot;reported_cost_usd&quot;: 0.0005075
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-6-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="higher_than_manager Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars."><summary><span class="badge pass">Pass</span> Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name AS employee_name, m.name AS manager_name, e.salary / 100.0 AS employee_salary_usd, m.salary / 100.0 AS manager_salary_usd FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary</pre><h3>Answer</h3>
+<div class="answer">The following employees earn more than their managers:
+
+| Employee Name | Manager Name | Employee Salary (USD) | Manager Salary (USD) |
+| :--- | :--- | :--- | :--- |
+| Casey Patel | Alex Chen | 160,000.0 | 140,000.0 |
+| River Mitchell | Alex Chen | 220,000.0 | 140,000.0 |
+| Shawn Phillips | Sam Rivera | 135,000.0 | 125,000.0 |</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;employee_name&quot;,
+    &quot;manager_name&quot;,
+    &quot;employee_salary_usd&quot;,
+    &quot;manager_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name, m.name, e.salary/100.0, m.salary/100.0 FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;name&quot;,
+    &quot;e.salary/100.0&quot;,
+    &quot;m.salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 895,
+  &quot;completion_tokens&quot;: 261,
+  &quot;estimated_cost_usd&quot;: 0.00061525,
+  &quot;reported_cost_usd&quot;: 0.0006152499999999999
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-6-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="higher_than_manager Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars."><summary><span class="badge pass">Pass</span> Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name AS employee_name, m.name AS manager_name, e.salary / 100.0 AS employee_salary, m.salary / 100.0 AS manager_salary
+FROM employee AS e
+JOIN employee AS m ON e.manager_id = m.id
+WHERE e.salary &gt; m.salary;</pre><h3>Answer</h3>
+<div class="answer">
+Casey Patel earns more than their manager Alex Chen, with a salary of $160000.00 compared to Alex Chen&#x27;s $140000.00.
+River Mitchell earns more than their manager Alex Chen, with a salary of $220000.00 compared to Alex Chen&#x27;s $140000.00.
+Shawn Phillips earns more than their manager Sam Rivera, with a salary of $135000.00 compared to Sam Rivera&#x27;s $125000.00.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;employee_name&quot;,
+    &quot;manager_name&quot;,
+    &quot;employee_salary&quot;,
+    &quot;manager_salary&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name, m.name, e.salary/100.0, m.salary/100.0 FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;name&quot;,
+    &quot;e.salary/100.0&quot;,
+    &quot;m.salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 748,
+  &quot;completion_tokens&quot;: 275,
+  &quot;estimated_cost_usd&quot;: 0.00018359,
+  &quot;reported_cost_usd&quot;: 0.0001513
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-6-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="higher_than_manager Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars."><summary><span class="badge pass">Pass</span> Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name AS employee_name, m.name AS manager_name, e.salary / 100.0 AS employee_salary_usd, m.salary / 100.0 AS manager_salary_usd FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY employee_name, manager_name;</pre><h3>Answer</h3>
+<div class="answer">
+Casey Patel earns more than Alex Chen ($160000.00 vs $140000.00). River Mitchell earns more than Alex Chen ($220000.00 vs $140000.00). Shawn Phillips earns more than Sam Rivera ($135000.00 vs $125000.00).</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;employee_name&quot;,
+    &quot;manager_name&quot;,
+    &quot;employee_salary_usd&quot;,
+    &quot;manager_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name, m.name, e.salary/100.0, m.salary/100.0 FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;name&quot;,
+    &quot;e.salary/100.0&quot;,
+    &quot;m.salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 928,
+  &quot;completion_tokens&quot;: 246,
+  &quot;estimated_cost_usd&quot;: 0.00018494,
+  &quot;reported_cost_usd&quot;: 0.00015934
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-6-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="higher_than_manager Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars."><summary><span class="badge pass">Pass</span> Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name AS employee_name, m.name AS manager_name, e.salary / 100.0 AS employee_salary_dollars, m.salary / 100.0 AS manager_salary_dollars FROM employee e INNER JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary;</pre><h3>Answer</h3>
+<div class="answer">Based on the query results, the following employees earn more than their managers:
+
+- **Casey Patel** earns $160,000, while their manager **Alex Chen** earns $140,000.
+- **River Mitchell** earns $220,000, while their manager **Alex Chen** earns $140,000.
+- **Shawn Phillips** earns $135,000, while their manager **Sam Rivera** earns $125,000.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;employee_name&quot;,
+    &quot;manager_name&quot;,
+    &quot;employee_salary_dollars&quot;,
+    &quot;manager_salary_dollars&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name, m.name, e.salary/100.0, m.salary/100.0 FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;name&quot;,
+    &quot;e.salary/100.0&quot;,
+    &quot;m.salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 659,
+  &quot;completion_tokens&quot;: 239,
+  &quot;estimated_cost_usd&quot;: 0.000361881,
+  &quot;reported_cost_usd&quot;: 0.000361881
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-6-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="higher_than_manager Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars."><summary><span class="badge pass">Pass</span> Which employees earn more than their manager? Return employee name, manager name, employee salary in dollars, and manager salary in dollars.<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e.name AS employee_name, m.name AS manager_name, e.salary / 100.0 AS employee_salary_usd, m.salary / 100.0 AS manager_salary_usd FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY e.name;</pre><h3>Answer</h3>
+<div class="answer">The employees who earn more than their manager are:
+
+- Casey Patel earns $160,000 while their manager Alex Chen earns $140,000.
+- River Mitchell earns $220,000 while their manager Alex Chen earns $140,000.
+- Shawn Phillips earns $135,000 while their manager Sam Rivera earns $125,000.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;employee_name&quot;,
+    &quot;manager_name&quot;,
+    &quot;employee_salary_usd&quot;,
+    &quot;manager_salary_usd&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT e.name, m.name, e.salary/100.0, m.salary/100.0 FROM employee e JOIN employee m ON e.manager_id = m.id WHERE e.salary &gt; m.salary ORDER BY e.name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;,
+    &quot;name&quot;,
+    &quot;e.salary/100.0&quot;,
+    &quot;m.salary/100.0&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Casey Patel&quot;,
+      &quot;Alex Chen&quot;,
+      160000.0,
+      140000.0
+    ],
+    [
+      &quot;River Mitchell&quot;,
+      &quot;Alex Chen&quot;,
+      220000.0,
+      140000.0
+    ],
+    [
+      &quot;Shawn Phillips&quot;,
+      &quot;Sam Rivera&quot;,
+      135000.0,
+      125000.0
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 803,
+  &quot;completion_tokens&quot;: 209,
+  &quot;estimated_cost_usd&quot;: 0.000375177,
+  &quot;reported_cost_usd&quot;: 0.000396922
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-7-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="hierarchy Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex."><summary><span class="badge pass">Pass</span> Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>WITH RECURSIVE subordinates(id, name) AS (SELECT e.id, e.name FROM employee e JOIN employee m ON e.manager_id = m.id WHERE m.name = &#x27;Alex Chen&#x27; UNION ALL SELECT e.id, e.name FROM employee e JOIN subordinates s ON e.manager_id = s.id) SELECT name FROM subordinates</pre><h3>Answer</h3>
+<div class="answer">The individuals who report to Alex Chen, directly or indirectly, are:
+
+* Sam Rivera
+* Casey Patel
+* Jamie Kim
+* Riley Park
+* Emerson Wright
+* Charlie Baker
+* River Mitchell
+* Avery Jones
+* Drew Miller
+* Quinn Davis
+* Logan Green
+* Elliot Nelson
+* Shawn Phillips</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>WITH RECURSIVE reports(id,name) AS (SELECT e.id,e.name FROM employee e JOIN employee m ON e.manager_id=m.id WHERE m.name=&#x27;Alex Chen&#x27; UNION ALL SELECT e.id,e.name FROM employee e JOIN reports r ON e.manager_id=r.id) SELECT name FROM reports ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 661,
+  &quot;completion_tokens&quot;: 187,
+  &quot;estimated_cost_usd&quot;: 0.00044574999999999997,
+  &quot;reported_cost_usd&quot;: 0.00044574999999999997
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-7-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="hierarchy Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex."><summary><span class="badge pass">Pass</span> Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>WITH RECURSIVE subordinates(id, name) AS (SELECT id, name FROM employee WHERE manager_id = (SELECT id FROM employee WHERE name = &#x27;Alex Chen&#x27;) UNION ALL SELECT e.id, e.name FROM employee e JOIN subordinates s ON e.manager_id = s.id) SELECT name FROM subordinates ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">The individuals who report to Alex Chen, directly or indirectly, are:
+
+*   Avery Jones
+*   Casey Patel
+*   Charlie Baker
+*   Drew Miller
+*   Elliot Nelson
+*   Emerson Wright
+*   Jamie Kim
+*   Logan Green
+*   Quinn Davis
+*   Riley Park
+*   River Mitchell
+*   Sam Rivera
+*   Shawn Phillips</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>WITH RECURSIVE reports(id,name) AS (SELECT e.id,e.name FROM employee e JOIN employee m ON e.manager_id=m.id WHERE m.name=&#x27;Alex Chen&#x27; UNION ALL SELECT e.id,e.name FROM employee e JOIN reports r ON e.manager_id=r.id) SELECT name FROM reports ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 825,
+  &quot;completion_tokens&quot;: 196,
+  &quot;estimated_cost_usd&quot;: 0.00050025,
+  &quot;reported_cost_usd&quot;: 0.00050025
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-7-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="fail" data-search="hierarchy Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex."><summary><span class="badge fail">Fail</span> Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT e2.name FROM employee AS e1 JOIN employee AS e2 ON e1.id = e2.manager_id WHERE e1.name = &#x27;Alex Chen&#x27; AND e2.name != &#x27;Alex Chen&#x27;</pre><h3>Answer</h3>
+<div class="answer">Sam Rivera, Casey Patel, Jamie Kim, Riley Park, Emerson Wright, Charlie Baker, and River Mitchell report to Alex Chen.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>WITH RECURSIVE reports(id,name) AS (SELECT e.id,e.name FROM employee e JOIN employee m ON e.manager_id=m.id WHERE m.name=&#x27;Alex Chen&#x27; UNION ALL SELECT e.id,e.name FROM employee e JOIN reports r ON e.manager_id=r.id) SELECT name FROM reports ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 623,
+  &quot;completion_tokens&quot;: 149,
+  &quot;estimated_cost_usd&quot;: 0.00011689,
+  &quot;reported_cost_usd&quot;: 0.000107
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-7-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="fail" data-search="hierarchy Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex."><summary><span class="badge fail">Fail</span> Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>No SQL generated</pre><h3>Answer</h3>
+<div class="answer">This query requires recursive traversal to find indirect reports, which is not supported by a single read-only SQLite query. The schema does not provide a way to efficiently determine all levels of subordinates without recursion.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>null</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>WITH RECURSIVE reports(id,name) AS (SELECT e.id,e.name FROM employee e JOIN employee m ON e.manager_id=m.id WHERE m.name=&#x27;Alex Chen&#x27; UNION ALL SELECT e.id,e.name FROM employee e JOIN reports r ON e.manager_id=r.id) SELECT name FROM reports ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 610,
+  &quot;completion_tokens&quot;: 51,
+  &quot;estimated_cost_usd&quot;: 7.175e-05,
+  &quot;reported_cost_usd&quot;: 4.871e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-7-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="hierarchy Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex."><summary><span class="badge pass">Pass</span> Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>WITH RECURSIVE reports AS (SELECT id, name, manager_id FROM employee WHERE manager_id = (SELECT id FROM employee WHERE name = &#x27;Alex Chen&#x27;) UNION ALL SELECT e.id, e.name, e.manager_id FROM employee e INNER JOIN reports r ON e.manager_id = r.id) SELECT name FROM reports;</pre><h3>Answer</h3>
+<div class="answer">The following employees report to Alex Chen, either directly or indirectly:
+
+- Sam Rivera
+- Casey Patel
+- Jamie Kim
+- Riley Park
+- Emerson Wright
+- Charlie Baker
+- River Mitchell
+- Avery Jones
+- Drew Miller
+- Quinn Davis
+- Logan Green
+- Elliot Nelson
+- Shawn Phillips</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>WITH RECURSIVE reports(id,name) AS (SELECT e.id,e.name FROM employee e JOIN employee m ON e.manager_id=m.id WHERE m.name=&#x27;Alex Chen&#x27; UNION ALL SELECT e.id,e.name FROM employee e JOIN reports r ON e.manager_id=r.id) SELECT name FROM reports ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 622,
+  &quot;completion_tokens&quot;: 251,
+  &quot;estimated_cost_usd&quot;: 0.000361898,
+  &quot;reported_cost_usd&quot;: 0.00033483700000000005
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-7-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="hierarchy Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex."><summary><span class="badge pass">Pass</span> Who reports to Alex Chen, directly or indirectly? Return their names, excluding Alex.<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>WITH RECURSIVE reports AS (SELECT id, name, manager_id FROM employee WHERE name = &#x27;Alex Chen&#x27; UNION ALL SELECT e.id, e.name, e.manager_id FROM employee e INNER JOIN reports r ON e.manager_id = r.id) SELECT name FROM reports WHERE name != &#x27;Alex Chen&#x27; ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">Based on the query results, the following individuals report to Alex Chen, either directly or indirectly:
+
+- Avery Jones
+- Casey Patel
+- Charlie Baker
+- Drew Miller
+- Elliot Nelson
+- Emerson Wright
+- Jamie Kim
+- Logan Green
+- Quinn Davis
+- Riley Park
+- River Mitchell
+- Sam Rivera
+- Shawn Phillips
+
+The list includes 13 names and is complete (not truncated).</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>WITH RECURSIVE reports(id,name) AS (SELECT e.id,e.name FROM employee e JOIN employee m ON e.manager_id=m.id WHERE m.name=&#x27;Alex Chen&#x27; UNION ALL SELECT e.id,e.name FROM employee e JOIN reports r ON e.manager_id=r.id) SELECT name FROM reports ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Avery Jones&quot;
+    ],
+    [
+      &quot;Casey Patel&quot;
+    ],
+    [
+      &quot;Charlie Baker&quot;
+    ],
+    [
+      &quot;Drew Miller&quot;
+    ],
+    [
+      &quot;Elliot Nelson&quot;
+    ],
+    [
+      &quot;Emerson Wright&quot;
+    ],
+    [
+      &quot;Jamie Kim&quot;
+    ],
+    [
+      &quot;Logan Green&quot;
+    ],
+    [
+      &quot;Quinn Davis&quot;
+    ],
+    [
+      &quot;Riley Park&quot;
+    ],
+    [
+      &quot;River Mitchell&quot;
+    ],
+    [
+      &quot;Sam Rivera&quot;
+    ],
+    [
+      &quot;Shawn Phillips&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 766,
+  &quot;completion_tokens&quot;: 253,
+  &quot;estimated_cost_usd&quot;: 0.000400794,
+  &quot;reported_cost_usd&quot;: 0.000517411
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-8-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="unsupported Who received a promotion last year?"><summary><span class="badge pass">Pass</span> Who received a promotion last year?<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>No SQL generated</pre><h3>Answer</h3>
+<div class="answer">The database schema does not contain information about promotions or historical job changes; it only stores the current role and start date.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>null</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>Expected: decline unsupported question</pre>
+<pre>null</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 419,
+  &quot;completion_tokens&quot;: 40,
+  &quot;estimated_cost_usd&quot;: 0.00016475,
+  &quot;reported_cost_usd&quot;: 0.00016475
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-8-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="unsupported Who received a promotion last year?"><summary><span class="badge pass">Pass</span> Who received a promotion last year?<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>No SQL generated</pre><h3>Answer</h3>
+<div class="answer">The database schema does not contain information about promotions or historical job titles, making it impossible to determine if an employee received a promotion.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>null</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>Expected: decline unsupported question</pre>
+<pre>null</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 590,
+  &quot;completion_tokens&quot;: 42,
+  &quot;estimated_cost_usd&quot;: 0.00021049999999999997,
+  &quot;reported_cost_usd&quot;: 0.0002105
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-8-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="unsupported Who received a promotion last year?"><summary><span class="badge pass">Pass</span> Who received a promotion last year?<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>No SQL generated</pre><h3>Answer</h3>
+<div class="answer">The schema does not contain information about promotions. It only stores the start date of employment, which does not necessarily indicate a promotion. Therefore, it is impossible to determine who received a promotion last year from the given database schema.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>null</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>Expected: decline unsupported question</pre>
+<pre>null</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 429,
+  &quot;completion_tokens&quot;: 56,
+  &quot;estimated_cost_usd&quot;: 5.952e-05,
+  &quot;reported_cost_usd&quot;: 5.952e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-8-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="unsupported Who received a promotion last year?"><summary><span class="badge pass">Pass</span> Who received a promotion last year?<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>No SQL generated</pre><h3>Answer</h3>
+<div class="answer">The question asks about promotions, but the schema does not contain information about promotions. It only contains the start date, which represents the date the employee started in their current role, not necessarily a promotion date. Therefore, this question cannot be answered from the provided database schema.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>null</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>Expected: decline unsupported question</pre>
+<pre>null</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 600,
+  &quot;completion_tokens&quot;: 65,
+  &quot;estimated_cost_usd&quot;: 7.725000000000001e-05,
+  &quot;reported_cost_usd&quot;: 7.725e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-8-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="unsupported Who received a promotion last year?"><summary><span class="badge pass">Pass</span> Who received a promotion last year?<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>No SQL generated</pre><h3>Answer</h3>
+<div class="answer">The question asks about promotions, but the schema does not include any column or data that tracks promotions or role changes over time. The &#x27;role&#x27; column is static per employee record, and there is no historical data on role transitions. Therefore, it is impossible to determine from this database who received a promotion last year.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>null</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>Expected: decline unsupported question</pre>
+<pre>null</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 373,
+  &quot;completion_tokens&quot;: 77,
+  &quot;estimated_cost_usd&quot;: 0.000158207,
+  &quot;reported_cost_usd&quot;: 0.00012624
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-8-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="unsupported Who received a promotion last year?"><summary><span class="badge pass">Pass</span> Who received a promotion last year?<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>No SQL generated</pre><h3>Answer</h3>
+<div class="answer">The question asks about promotions, but the schema does not contain promotion history or role change tracking. The start_date represents hiring date, not promotion dates. Therefore, this question cannot be answered from the given database.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>null</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>Expected: decline unsupported question</pre>
+<pre>null</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 519,
+  &quot;completion_tokens&quot;: 55,
+  &quot;estimated_cost_usd&quot;: 0.000178421,
+  &quot;reported_cost_usd&quot;: 0.000178421
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-9-zero-shot" data-model="m0" data-strategy="zero-shot" data-outcome="pass" data-search="noboss Who doesnt have a boss?"><summary><span class="badge pass">Pass</span> Who doesnt have a boss?<small>google/gemini-3.1-flash-lite · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee does not have a boss.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 520,
+  &quot;completion_tokens&quot;: 48,
+  &quot;estimated_cost_usd&quot;: 0.00020199999999999998,
+  &quot;reported_cost_usd&quot;: 0.00020199999999999998
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-0-9-few-shot" data-model="m0" data-strategy="few-shot" data-outcome="pass" data-search="noboss Who doesnt have a boss?"><summary><span class="badge pass">Pass</span> Who doesnt have a boss?<small>google/gemini-3.1-flash-lite · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee does not have a boss.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemini-3.1-flash-lite</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 694,
+  &quot;completion_tokens&quot;: 50,
+  &quot;estimated_cost_usd&quot;: 0.0002485,
+  &quot;reported_cost_usd&quot;: 0.00024849999999999997
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-9-zero-shot" data-model="m1" data-strategy="zero-shot" data-outcome="pass" data-search="noboss Who doesnt have a boss?"><summary><span class="badge pass">Pass</span> Who doesnt have a boss?<small>google/gemma-3-27b-it · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL;</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee doesn&#x27;t have a boss.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 540,
+  &quot;completion_tokens&quot;: 68,
+  &quot;estimated_cost_usd&quot;: 7.38e-05,
+  &quot;reported_cost_usd&quot;: 7.439999999999999e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-1-9-few-shot" data-model="m1" data-strategy="few-shot" data-outcome="pass" data-search="noboss Who doesnt have a boss?"><summary><span class="badge pass">Pass</span> Who doesnt have a boss?<small>google/gemma-3-27b-it · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee doesn&#x27;t have a boss.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: google/gemma-3-27b-it</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 714,
+  &quot;completion_tokens&quot;: 68,
+  &quot;estimated_cost_usd&quot;: 8.772000000000001e-05,
+  &quot;reported_cost_usd&quot;: 6.178000000000001e-05
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-9-zero-shot" data-model="m2" data-strategy="zero-shot" data-outcome="pass" data-search="noboss Who doesnt have a boss?"><summary><span class="badge pass">Pass</span> Who doesnt have a boss?<small>deepseek/deepseek-v3.2 · zero-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL;</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee does not have a boss.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 482,
+  &quot;completion_tokens&quot;: 70,
+  &quot;estimated_cost_usd&quot;: 0.000180838,
+  &quot;reported_cost_usd&quot;: 0.00023389
+}</pre>
+</div></details>
+<details class="evidence" id="evidence-2-9-few-shot" data-model="m2" data-strategy="few-shot" data-outcome="pass" data-search="noboss Who doesnt have a boss?"><summary><span class="badge pass">Pass</span> Who doesnt have a boss?<small>deepseek/deepseek-v3.2 · few-shot</small></summary>
+<div class="evidence-body"><h3>Generated SQL</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre><h3>Answer</h3>
+<div class="answer">Morgan Lee does not have a boss.</div>
+<div class="results-grid"><div><h3>Returned data</h3>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div>
+<div><h3>Reference SQL and expected data</h3>
+<pre>SELECT name FROM employee WHERE manager_id IS NULL ORDER BY name;</pre>
+<pre>{
+  &quot;columns&quot;: [
+    &quot;name&quot;
+  ],
+  &quot;rows&quot;: [
+    [
+      &quot;Morgan Lee&quot;
+    ]
+  ],
+  &quot;truncated&quot;: false
+}</pre></div></div>
+<p class="footnote">Actual responding models: deepseek/deepseek-v3.2</p>
+<pre>{
+  &quot;prompt_tokens&quot;: 631,
+  &quot;completion_tokens&quot;: 88,
+  &quot;estimated_cost_usd&quot;: 0.000233829,
+  &quot;reported_cost_usd&quot;: 0.000233829
+}</pre>
+</div></details>
+</section><footer>Local report · no external scripts or services · Results reflect this database and this run. Reload the file to see updates during a live comparison.</footer></main>
+<script>
+const model=document.getElementById('model-filter'), strategy=document.getElementById('strategy-filter'), search=document.getElementById('search'), failures=document.getElementById('failures');
+function matches(el){return (!model.value||el.dataset.model===model.value)&&(!strategy.value||el.dataset.strategy===strategy.value)}
+function update(){
+ document.querySelectorAll('.matrix [data-model]').forEach(el=>el.hidden=!matches(el));
+ document.querySelectorAll('.question-row').forEach(row=>{
+   const cells=[...row.querySelectorAll('[data-outcome]')].filter(matches);
+   row.hidden=!row.dataset.search.toLowerCase().includes(search.value.toLowerCase())||(failures.checked&&!cells.some(c=>['fail','error'].includes(c.dataset.outcome)));
+ });
+ document.querySelectorAll('.evidence').forEach(el=>el.hidden=!matches(el)||!el.dataset.search.toLowerCase().includes(search.value.toLowerCase())||(failures.checked&&!['fail','error'].includes(el.dataset.outcome)));
+}
+[model,strategy,search,failures].forEach(el=>el.addEventListener('input',update));
+document.querySelectorAll('.matrix a').forEach(link=>link.addEventListener('click',()=>{const target=document.getElementById(link.hash.slice(1));if(target)target.open=true;}));
+function revealHash(){const target=document.getElementById(location.hash.slice(1));if(target&&target.tagName==='DETAILS')target.open=true;}
+window.addEventListener('hashchange',revealHash);revealHash();
+</script>
+</body></html>

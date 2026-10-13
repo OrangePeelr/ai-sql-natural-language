@@ -1,0 +1,10 @@
+{
+  "started_at": "2026-10-12T19:32:18.623994+00:00",
+  "model": "google/gemma-3-27b-it",
+  "pricing": {
+    "prompt": "0.00000008",
+    "completion": "0.00000045",
+    "input_cache_read": "0.00000004"
+  },
+  "limit": 9
+}

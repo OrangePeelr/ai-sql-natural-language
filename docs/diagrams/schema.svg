@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="510" viewBox="0 0 850 510">
+  <rect width="850" height="510" fill="#f7f8fb"/>
+  <path d="M190 155 H95 V340 H190" fill="none" stroke="#a44a75" stroke-width="3"/>
+  <path d="M175 332 L190 340 L175 348" fill="none" stroke="#a44a75" stroke-width="3"/>
+  <rect x="190" y="60" width="590" height="375" rx="15" fill="white" stroke="#d6dae2"/>
+  <path d="M205 60 H765 Q780 60 780 75 V120 H190 V75 Q190 60 205 60" fill="#fce5ee"/>
+  <g font-family="sans-serif" fill="#354254">
+    <text x="485" y="101" font-size="30" text-anchor="middle" fill="#a44a75">employee</text>
+    <g font-size="20">
+      <text x="215" y="160">id</text><text x="495" y="160">INTEGER PRIMARY KEY</text>
+      <text x="215" y="205">name</text><text x="495" y="205">TEXT UNIQUE NOT NULL</text>
+      <text x="215" y="250">role</text><text x="495" y="250">TEXT CHECK (allowed roles)</text>
+      <text x="215" y="295">salary</text><text x="495" y="295">INTEGER (annual USD cents)</text>
+      <text x="215" y="340">manager_id</text><text x="495" y="340">INTEGER FK, nullable</text>
+      <text x="215" y="385">start_date</text><text x="495" y="385">TEXT (YYYY-MM-DD)</text>
+    </g>
+    <text x="425" y="470" font-size="18" text-anchor="middle">manager_id → employee.id · one manager to many direct reports</text>
+    <text x="425" y="495" font-size="16" text-anchor="middle">NULL manager_id means no manager · salary outputs are converted to dollars</text>
+  </g>
+</svg>
+
